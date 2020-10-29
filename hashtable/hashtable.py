@@ -22,7 +22,7 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-        self.my_arr = [None for i in range(capacity)]
+        self.my_arr = [None] * capacity
         self.capacity = capacity
 
 
@@ -88,8 +88,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        hashed_string = self.djb2(key)
-        idx = hashed_string % self.capacity
+        # hashed_string = self.djb2(key)
+        idx = self.hash_index(key)
 
         new_hashTableEntry = HashTableEntry(key, value)
         existing_entry = self.my_arr[idx]
@@ -117,6 +117,26 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hashed_string = self.djb2(key)
+        # idx = hashed_string % self.capacity
+        idx = self.hash_index(key)
+
+        existing_entry = self.my_arr[idx]
+
+        if existing_entry:
+            last_entry = None
+            while existing_entry:
+                if existing_entry.key == key:
+                    if last_entry:
+                        last_entry.next = existing_entry.next_node
+                        return
+                    else:
+                        self.my_arr[idx] = existing_entry.next
+                        return
+                last_entry = existing_entry
+                existing_entry = existing_entry.next
+        print("Key was not found")
+
 
 
     def get(self, key):
@@ -128,6 +148,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hashed_string = self.djb2(key)
+        # idx = hashed_string % self.capacity
+        idx = self.hash_index(key)
+
+        existing_entry = self.my_arr[idx]
+
+        if existing_entry:
+            while existing_entry:
+                if existing_entry.key == key:
+                    return existing_entry.value
+                existing_entry = existing_entry.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -138,19 +170,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-
-
-ht = HashTable(8)
-ht.put("hello", "world")
-ht.put("ello", "orld")
-print(ht.my_arr[1].value)
-print(ht.my_arr[1].next.value)
-
-# print(ht.my_arr)
-
-# print(ht.my_arr[1].key)
-# print(ht.my_arr[1].value)
 
 
 # if __name__ == "__main__":
