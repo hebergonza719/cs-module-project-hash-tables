@@ -1,5 +1,8 @@
 # Your code here
+import math
+import random
 
+lookup_table = {}
 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
@@ -15,6 +18,11 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
+    if str(f'{x}, {y}') in lookup_table:
+        return lookup_table[str(f'{x}, {y}')]
+    else:
+        lookup_table[str(f'{x}, {y}')] = slowfun_too_slow(x, y)
+        return lookup_table[str(f'{x}, {y}')]
 
 
 

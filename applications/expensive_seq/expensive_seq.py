@@ -1,8 +1,19 @@
 # Your code here
 
+lookup_table = {}
 
 def expensive_seq(x, y, z):
     # Your code here
+    if x <= 0:
+        return y + z
+    else:
+        if (x, y, x) in lookup_table:
+            return lookup_table[(x, y, z)]
+        else:
+            if (x, y, z) not in lookup_table:
+                lookup_table[(x, y, z)] = expensive_seq(x-1, y+1, z) + expensive_seq(x-2, y+2, z*2) + expensive_seq(x-3, y+3, z*3)
+            return lookup_table[(x, y, z)]
+        
 
 
 

@@ -1,7 +1,19 @@
+import re
+
 def word_count(s):
     # Your code here
+    pattern = '[\"\:\;\,\.\-\+\=\/\\\|[\]\{\}\(\)\*\^\&]'
+    s = re.sub(pattern, '', s)
+    lookup = {}
+    s = s.lower()
+    s = s.split()
 
-
+    for word in s:
+        if word not in lookup:
+            lookup[word] = 1
+        else:
+            lookup[word] += 1
+    return lookup
 
 if __name__ == "__main__":
     print(word_count(""))

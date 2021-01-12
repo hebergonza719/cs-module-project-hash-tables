@@ -22,6 +22,10 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        self.my_arr = [None] * capacity
+        self.capacity = capacity
+
+        self.load = 0
 
 
     def get_num_slots(self):
@@ -35,6 +39,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return len(self.my_arr)
 
 
     def get_load_factor(self):
@@ -44,6 +49,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.load / self.capacity
 
 
     def fnv1(self, key):
@@ -63,6 +69,10 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for x in key:
+            hash = ((hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -82,6 +92,30 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hashed_string = self.djb2(key)
+        idx = self.hash_index(key)
+
+        new_hashTableEntry = HashTableEntry(key, value)
+        existing_entry = self.my_arr[idx]
+
+        if existing_entry:            
+            while existing_entry:
+                if existing_entry.key == key:
+                    # updating value for this repeat key
+                    existing_entry.value = value
+                    return
+                if existing_entry.next == None:
+                    existing_entry.next = new_hashTableEntry
+                    self.load = self.load + 1
+                    if self.get_load_factor() > 0.7:
+                        self.resize(self.capacity * 2)
+                    return
+                existing_entry = existing_entry.next
+        else:
+            self.my_arr[idx] = new_hashTableEntry
+            self.load = self.load + 1
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity * 2)
 
 
     def delete(self, key):
@@ -93,6 +127,31 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hashed_string = self.djb2(key)
+        # idx = hashed_string % self.capacity
+        idx = self.hash_index(key)
+
+        existing_entry = self.my_arr[idx]
+
+        if self.load == 0:
+            print("there are no items in hash table")
+            return
+
+        if existing_entry:
+            last_entry = None
+            while existing_entry:
+                if existing_entry.key == key:
+                    self.load = self.load - 1
+                    if last_entry:
+                        last_entry.next = existing_entry.next
+                        return
+                    else:
+                        self.my_arr[idx] = existing_entry.next
+                        return
+                last_entry = existing_entry
+                existing_entry = existing_entry.next
+        print("Key was not found") 
+
 
 
     def get(self, key):
@@ -104,6 +163,18 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hashed_string = self.djb2(key)
+        # idx = hashed_string % self.capacity
+        idx = self.hash_index(key)
+
+        existing_entry = self.my_arr[idx]
+
+        if existing_entry:
+            while existing_entry:
+                if existing_entry.key == key:
+                    return existing_entry.value
+                existing_entry = existing_entry.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -114,8 +185,19 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        new_arr = [None] * (new_capacity)
+        self.capacity = new_capacity
 
+        old_arr = self.my_arr
 
+        self.my_arr = new_arr
+
+        for index in range(len(old_arr)):
+            entry = old_arr[index]
+            if entry:
+                while entry:
+                    self.put(entry.key, entry.value)
+                    entry = entry.next
 
 if __name__ == "__main__":
     ht = HashTable(8)
